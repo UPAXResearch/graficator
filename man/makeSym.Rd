@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeSym.R
 \name{makeSym}
 \alias{makeSym}
-\title{Convierte columna a simbolo}
+\title{Convierte string a simbolo}
 \usage{
 makeSym(c)
 }

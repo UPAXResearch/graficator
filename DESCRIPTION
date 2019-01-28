@@ -8,5 +8,5 @@ Description: Funciones para generar graficas especificas
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Depends: tidyverse, plotly
+Depends: lattice, tidyverse, plotly
 RoxygenNote: 6.1.1
