@@ -1,0 +1,12 @@
+Package: graficator
+Type: Package
+Title: Generador de gráficas
+Version: 0.1.0
+Author: José Diaz & Alonso Santaella
+Maintainer: José Diaz <jadm333@gmail.com>
+Description: Funciones para generar graficas especificas
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Depends: tidyverse, plotly
+RoxygenNote: 6.1.1
