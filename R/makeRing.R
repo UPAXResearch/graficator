@@ -58,7 +58,7 @@ makeRing <- function(df,
                   xref='paper',
                   y = -0.08,
                   yref='paper',
-                  text =paste('Base: ', calcBase(df,column)),
+                  text =paste('Base: ', sum(!is.na(plot_df %>% select(!!lab)))),
                   showarrow = F),
              # Aquí se pone el IPN total en el hueco del anillo
              list(x= 0.5,
