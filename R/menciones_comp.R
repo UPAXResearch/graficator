@@ -57,7 +57,6 @@ menciones_comp <- function(df,
                          cruce,
                          filtro,
                          filtro_col)
-    colnames(res) <- nombres[1:3]
     return(res)
 
   } else {
@@ -82,7 +81,7 @@ menciones_comp <- function(df,
         max_dist = 0.005,
         distance_col = "dist") %>%
       dplyr::select(Mención.x, Casos, Porcentaje.x, Porcentaje.y) %>%
-      dplyr::mutate(diff = Porcentaje.x - Porcentaje.y) %>%
+      dplyr::mutate(diff = round(Porcentaje.x - Porcentaje.y,1)) %>%
       dplyr::mutate_at(function(x) ifelse(is.na(x), "", x),
                        .vars = c("Porcentaje.y", "diff")) %>%
       dplyr::rowwise(.) %>%
