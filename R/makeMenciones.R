@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+
 makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
                           filtro = "Ninguno",
                           filtro_col = "") {
@@ -48,7 +49,7 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     nivelesT <- getLevelsWTotal(df, cruce)
   }
 
-  trash <- c("Otro", "-", "", "No contesto")
+  trash <- c("Otro", "-", "", "No contesto", "NO SABE / NO CONTESTO", "NADA / NINGUNO")
   N <- nrow(df)
   # TODO: Sacar de la funcion:
   catm <- read_csv("datos/catalogoMenciones.csv",
@@ -166,8 +167,84 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     # View(u) #<- data.frame(u, col.names = c("Mención", cruce_original), check.names = F)
 
   } else{
-    u = sf %>% dplyr::select(-cruce,-clasificacion) %>% mutate(Mención = mencion, Porcentaje = paste0(round(pct,2),"%"), Casos = freq) %>% dplyr::select(-mencion,-pct,-freq)
+    u = sf %>% dplyr::select(-cruce,-clasificacion) %>% mutate(Mención = mencion, Casos = freq, Porcentaje = round(pct,1)) %>% dplyr::select(-mencion,-pct,-freq)
   }
-
   return(u)
 }
+
+library(tidyverse)
+library(fuzzyjoin)
+# df <- readRDS('datos/IPN_4Q_completa_050219.rds') %>% filter(NICK.USUARIO != "callcenter")
+df <- readRDS('datos/IPN_4Q_completa_050219.rds') %>% filter(EKT == "1")
+df_old <- readRDS('datos/base.rds')
+menciones_col <- juicioFinal::nombresR(df, "P56")
+menciones_col_old <- juicioFinal::nombresR(df_old, "P56")
+tipo <- "Positivas"
+cruce <- "Ninguno"
+filtro <- "Ninguno"
+filtro_col <- ""
+filtro_col_old <- ""
+q <- 4
+
+menciones_comp <- function(df, df_old,
+                           menciones_col, menciones_col_old,
+                           q,
+                           tipo = "Todas",
+                           cruce = "Ninguno",
+                           filtro = "Ninguno",
+                           filtro_col = "", filtro_col_old = filtro_col) {
+
+  q_prev <- previous_q(q)
+  nombres <- c(
+    "Mención",
+    paste0("Casos (", q, "Q)"),
+    paste0("Porcentaje (", q, "Q) %"),
+    paste0("Porcentaje (", q_prev, "Q) %"),
+    "Diferencia (pp)"
+  )
+
+  if (cruce == "Ninguno"){
+    res <- makeMenciones(df,
+                         menciones_col,
+                         tipo,
+                         cruce,
+                         filtro,
+                         filtro_col)
+    colnames(res) <- nombres[1:3]
+    return(res)
+
+  } else {
+    t1 <- makeMenciones(df,
+                        menciones_col,
+                        tipo,
+                        cruce,
+                        filtro,
+                        filtro_col)
+    t2 <- makeMenciones(df_old,
+                        menciones_col_old,
+                        tipo,
+                        cruce,
+                        filtro,
+                        filtro_col_old)
+
+    res <- t1 %>%
+      stringdist_left_join(
+        t2 %>% select(c(1, 3)),
+        by = c(Mención = "Mención"),
+        method = "cosine",
+        max_dist = 0.005,
+        distance_col = "dist") %>%
+      dplyr::select(Mención.x, Casos, Porcentaje.x, Porcentaje.y) %>%
+      dplyr::mutate(diff = Porcentaje.x - Porcentaje.y) %>%
+      dplyr::mutate_at(function(x) ifelse(is.na(x), "", x),
+                       .vars = c("Porcentaje.y", "diff"))
+    colnames(res) <- nombres
+    return(res)
+
+  }
+
+
+
+}
+
+table(df$EKT, df$BAZ, perc)
