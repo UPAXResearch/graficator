@@ -179,7 +179,8 @@ df <- readRDS('datos/IPN_4Q_completa_050219.rds') %>% filter(EKT == "1")
 df_old <- readRDS('datos/base.rds')
 menciones_col <- juicioFinal::nombresR(df, "P56")
 menciones_col_old <- juicioFinal::nombresR(df_old, "P56")
-tipo <- "Positivas"
+# tipo <- "Positivas"
+tipo <- "Negativas"
 cruce <- "Ninguno"
 filtro <- "Ninguno"
 filtro_col <- ""
@@ -200,8 +201,16 @@ menciones_comp <- function(df, df_old,
     paste0("Casos (", q, "Q)"),
     paste0("Porcentaje (", q, "Q) %"),
     paste0("Porcentaje (", q_prev, "Q) %"),
-    "Diferencia (pp)"
-  )
+    "Diferencia (pp)")
+
+  arrow <- function(x){
+    if(is.na(x) || x == 0){return("")}
+    else if(x > 0){
+      return("<i class=\"glyphicon glyphicon-chevron-up\" style=\"color:#298428\"></i>")
+    } else {
+      return("<i class=\"glyphicon glyphicon-chevron-down\" style=\"color:#cc3232\"></i>")
+    }
+  }
 
   if (cruce == "Ninguno"){
     res <- makeMenciones(df,
@@ -228,7 +237,7 @@ menciones_comp <- function(df, df_old,
                         filtro_col_old)
 
     res <- t1 %>%
-      stringdist_left_join(
+      fuzzyjoin::stringdist_left_join(
         t2 %>% select(c(1, 3)),
         by = c(Mención = "Mención"),
         method = "cosine",
@@ -237,14 +246,11 @@ menciones_comp <- function(df, df_old,
       dplyr::select(Mención.x, Casos, Porcentaje.x, Porcentaje.y) %>%
       dplyr::mutate(diff = Porcentaje.x - Porcentaje.y) %>%
       dplyr::mutate_at(function(x) ifelse(is.na(x), "", x),
-                       .vars = c("Porcentaje.y", "diff"))
-    colnames(res) <- nombres
+                       .vars = c("Porcentaje.y", "diff")) %>%
+      dplyr::rowwise(.) %>%
+      dplyr::mutate(asdf = arrow(diff))
+    colnames(res) <- c(nombres,"")
     return(res)
 
   }
-
-
-
 }
-
-table(df$EKT, df$BAZ, perc)
