@@ -32,7 +32,9 @@ menciones_comp <- function(df,
                            filtro = "Ninguno",
                            filtro_col = "",
                            filtro_col_old = filtro_col) {
-
+  if((filtro == "Promotor" & tipo == "Negativas") | (filtro == "Detractor" & tipo == "Positivas")){
+    return(data.frame())
+  }
   q_prev <- previous_q(q)
   nombres <- c(
     "Mención",

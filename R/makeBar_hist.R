@@ -24,8 +24,8 @@ makeBar_hist <- function(df, label_var, level_var, df_ant ,filtros = NULL){
     mutate(IPN.dif = IPN - IPN_ant)
 
   d_dif = d_IPN %>% mutate(Sn = ifelse(IPN.dif == 0, "-", "")) %>%
-    mutate(Pos = ifelse(IPN.dif > 0, paste0("+", round(IPN.dif,1)), "")) %>%
-    mutate(Neg = ifelse(IPN.dif < 0, round(IPN.dif,1), "")) %>%
+    mutate(Pos = ifelse(IPN.dif > 0, paste0("+", round(IPN.dif,1), "pp"), "")) %>%
+    mutate(Neg = ifelse(IPN.dif < 0, paste0(round(IPN.dif,1), "pp"), "")) %>%
     mutate(Sn = ifelse(is.na(IPN.dif), "", Sn)) %>%
     mutate(Pos = ifelse(is.na(IPN.dif), "", Pos)) %>%
     mutate(Neg = ifelse(is.na(IPN.dif), "", Neg))
