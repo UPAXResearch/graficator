@@ -9,6 +9,8 @@
 #'
 #' @param df Base de datos actual
 #' @param df_old Base de datos del Q pasado
+#' @param menciones_col Vector con los nombres de las columnas donde están las menciones de `df`
+#' @param menciones_col_old Vector con los nombres de las columnas donde están las menciones de `df_old`
 #' @param q Número de levantamiento (i.e. 3Q)
 #' @param tipo Tipo de menciones que se quieren ("Positivas", "Negativas" o "Todas")
 #' @param cruce Columna con la cual se van a cruzar las menciones
@@ -48,7 +50,7 @@ menciones_comp <- function(df,
     }
   }
 
-  if (cruce == "Ninguno"){
+  if (cruce != "Ninguno"){
     res <- makeMenciones(df,
                          menciones_col,
                          tipo,
@@ -85,7 +87,7 @@ menciones_comp <- function(df,
                        .vars = c("Porcentaje.y", "diff")) %>%
       dplyr::rowwise(.) %>%
       dplyr::mutate(asdf = arrow(diff))
-    colnames(res) <- c(nombres,"")
+    colnames(res) <- c(nombres,"Cambio")
     return(res)
 
   }
