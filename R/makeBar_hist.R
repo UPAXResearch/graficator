@@ -10,15 +10,15 @@
 #' @export
 #'
 #' @examples
-makeBar_hist <- function(df, label_var, level_var, df_ant ,filtros = NULL){
+makeBar_hist <- function(df, label_var, level_var, df_ant, lever_var_ant, filtros = NULL){
 
   top_labels <- c("Detractores", "Pasivos", "Promotores")
   colors <- c('cc3232', 'e7b416', '298428')
   d <- prepros(df, label_var, level_var, filtros)
-  d_ant = prepros(df_ant, label_var, level_var, filtros)
+  d_ant = prepros(df_ant, label_var, lever_var_ant, filtros)
 
-  d_join = d %>% left_join(d_ant, by = setNames(level_var, level_var), suffix = c("", ".ant"))
-  (d[,"fPromotor"]-d[,"fDetractor"])/d[,"fTotal"]
+  d_join = d %>% left_join(d_ant, by = setNames(lever_var_ant, level_var), suffix = c("", ".ant"))
+  # (d[,"fPromotor"]-d[,"fDetractor"])/d[,"fTotal"]
 
   d_IPN = d_join %>% mutate(IPN = round(100*(fPromotor - fDetractor)/fTotal,1) , IPN_ant = round(100*(fPromotor.ant - fDetractor.ant)/fTotal.ant, 1)) %>%
     mutate(IPN.dif = IPN - IPN_ant)

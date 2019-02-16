@@ -4,7 +4,8 @@
 \alias{makeBar_hist}
 \title{Grafica de barras horizontales para IPN con diferencia del Q pasado}
 \usage{
-makeBar_hist(df, label_var, level_var, df_ant, filtros = NULL)
+makeBar_hist(df, label_var, level_var, df_ant, lever_var_ant,
+  filtros = NULL)
 }
 \arguments{
 \item{filtros}{}
