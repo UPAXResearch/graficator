@@ -44,11 +44,13 @@ menciones_comp <- function(df,
     "Diferencia (pp)")
 
   arrow <- function(x){
-    if(is.na(x) || x == 0){return("")}
+    if(is.na(x) || x ==""){return("")}
     else if(x > 0){
       return("<i class=\"glyphicon glyphicon-chevron-up\" style=\"color:#298428\"></i>")
-    } else {
+    } else if(x < 0){
       return("<i class=\"glyphicon glyphicon-chevron-down\" style=\"color:#cc3232\"></i>")
+    } else if(x == 0){
+      return("<i class=\"glyphicon glyphicon-minus\" style=\"color:#000000\"></i>")
     }
   }
 
@@ -75,6 +77,10 @@ menciones_comp <- function(df,
                         filtro,
                         filtro_col_old)
 
+    ##Test
+    t1 = t1 %>% mutate(Mención = as.character(Mención))
+    t2 = t2 %>% mutate(Mención = as.character(Mención))
+    #
     res <- t1 %>%
       fuzzyjoin::stringdist_left_join(
         t2 %>% select(c(1, 3)),

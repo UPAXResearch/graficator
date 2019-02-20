@@ -49,7 +49,7 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     nivelesT <- getLevelsWTotal(df, cruce)
   }
 
-  trash <- c("Otro", "-", "", "No contesto", "NO SABE / NO CONTESTO", "NADA / NINGUNO")
+  trash <- c("Otro", "-", "", "No contesto", "NO SABE / NO CONTESTO", "NADA / NINGUNO", " ")
   N <- nrow(df)
   # TODO: Sacar de la funcion:
   catm <- read_csv("datos/catalogoMenciones.csv",
@@ -74,10 +74,16 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     mutate(cruce = "Total", pct = 100*freq/N) %>%
     dplyr::select(mencion, cruce, freq, pct, clasificacion)
 
+  # sf <- tmp %>%
+  #   group_by(clasificacion) %>%
+  #   arrange(desc(freq)) %>%
+  #   filter(!is.na(clasificacion))
+
+  #Test
   sf <- tmp %>%
     group_by(clasificacion) %>%
-    arrange(desc(freq)) %>%
-    filter(!is.na(clasificacion))
+    arrange(desc(freq))
+
   # {if (!is.null(tipo)) filter(clasificacion) } %>%
   # {if (!is.null(tipo)) filter(clasificacion == tipo) } %>%
   # top_n(10, freq)
@@ -85,7 +91,7 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
   if (!is.null(tipo)) {
     sf <- sf %>% filter(clasificacion == tipo)
   }
-  sf <- sf %>% top_n(10, freq)
+  # sf <- sf %>% top_n(10, freq)
 
   # View(sf) #################################
 
@@ -124,11 +130,17 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
       inner_join(tmp2, by = "mencion") %>%
       dplyr::select(mencion, cruce, freq, pct, clasificacion)
 
+    # cf <- tmp2 %>%
+    #   group_by(cruce, clasificacion) %>%
+    #   arrange(desc(freq)) %>%
+    #   filter(!is.na(clasificacion)) %>%
+    #   top_n(10, freq) %>%
+    #   semi_join(sf, by = "mencion")
+
+    #Test
     cf <- tmp2 %>%
       group_by(cruce, clasificacion) %>%
       arrange(desc(freq)) %>%
-      filter(!is.na(clasificacion)) %>%
-      top_n(10, freq) %>%
       semi_join(sf, by = "mencion")
 
     # View(cf)
@@ -146,8 +158,7 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     cruce_limpio = make.names(cruce_original, unique = TRUE, allow_ = FALSE)
 
     cruce_catalogo = data.frame(original = cruce_original, limpio = cruce_limpio) %>%
-      mutate_at(vars(original,limpio),
-                funs(factor(., levels = unique(.))))
+      mutate_at(vars(original,limpio), funs(factor(., levels = unique(.))))
 
     tmp = sf %>% inner_join(cruce_catalogo, by = c("cruce" = "original"))
 
