@@ -61,7 +61,8 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
     dplyr::select(mencion = Var1, freq = Freq) %>%
     filter(!mencion %in% trash) %>%
     arrange(desc(freq)) %>%
-    as_tibble(.)
+    as_tibble(.) %>%
+    mutate(mencion = as.character(mencion))
 
   tmp <- stringdist_left_join(menciones,
                               catm %>% dplyr::select(mencion,clasificacion),
