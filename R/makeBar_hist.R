@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-makeBar_hist <- function(df, label_var, level_var, df_ant, lever_var_ant, filtros = NULL){
+makeBar_hist <- function(df, label_var, level_var, df_ant, lever_var_ant, filtros = NULL,q){
 
   top_labels <- c("Detractores", "Pasivos", "Promotores")
   colors <- c('cc3232', 'e7b416', '298428')
@@ -86,7 +86,7 @@ makeBar_hist <- function(df, label_var, level_var, df_ant, lever_var_ant, filtro
            # margin = list(l = 100, r = 0, t = 70, b = 50),
            margin = list(l = 90, r = 0),
            showlegend = FALSE,
-           title="Desglose de resultados IPN 4Q 2018") %>%
+           title=paste0("Desglose de resultados IPN ",q,"Q 2019")) %>%
     # labeling the y-axis
     add_annotations(xref = 'paper', yref = 'y', x = 0.099, y = rev(nivelesy),
                     xanchor = 'right',
