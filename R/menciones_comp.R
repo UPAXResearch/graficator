@@ -90,8 +90,8 @@ menciones_comp <- function(df,
         distance_col = "dist") %>%
       dplyr::select(Mención.x, Casos, Porcentaje.x, Porcentaje.y) %>%
       dplyr::mutate(diff = round(Porcentaje.x - Porcentaje.y,1)) %>%
-      dplyr::mutate_at(function(x) ifelse(is.na(x), "", x),
-                       .vars = c("Porcentaje.y", "diff")) %>%
+      # dplyr::mutate_at(function(x) ifelse(is.na(x), "", x),
+      #                  .vars = c("Porcentaje.y", "diff")) %>%
       dplyr::rowwise(.) %>%
       dplyr::mutate(asdf = arrow(diff))
     colnames(res) <- c(nombres,"Cambio")
