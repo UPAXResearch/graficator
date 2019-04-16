@@ -15,7 +15,7 @@ ipn_hist_tipo_plot = function(data){
     scale_y_continuous(name = NULL,
                        breaks = seq(0, 0.80, by = 0.10),
                        minor_breaks = seq(0.05, .75, 0.10),
-                       limits = c(0,.80),
+                       limits = c(0,1),
                        labels = scales::percent) +
     scale_x_discrete(name = NULL,
                      expand = expand_scale(add = 0.25)) +
