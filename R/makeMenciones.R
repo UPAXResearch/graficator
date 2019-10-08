@@ -107,8 +107,9 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
         filter(!!sym(cruce) == l)
       n <- nrow(dftemp)
 
-      t <- data.frame(table(unlist(dftemp[,menciones_col]))) %>%
-        dplyr::select(mencion = Var1, freq = Freq) %>%
+      t <- data.frame(table(unlist(dftemp[,menciones_col])))
+      ifelse(ncol(t)>1,t,t<-data.frame(Var1=character(),Freq=numeric(),stringsAsFactors = T))
+      t<- dplyr::select(t,mencion = Var1, freq = Freq) %>%
         filter(!mencion %in% trash) %>%
         mutate(cruce = l) %>%
         mutate(pct = 100*freq/n) %>%
@@ -120,7 +121,6 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
       tot <- tot + n
       # print(n)
     }
-
     tmp2 <- stringdist_left_join(tdf,
                                  catm %>% dplyr::select(mencion,clasificacion),
                                  by = "mencion") %>%
