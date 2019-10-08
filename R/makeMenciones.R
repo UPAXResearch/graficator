@@ -175,7 +175,12 @@ makeMenciones <- function(df, menciones_col, tipo = "Todas", cruce = "Ninguno",
       v = temp %>% unite_(columnas[i], c(columnas_x[i], columnas_y[i]), sep = "<br>Casos: ") %>% mutate_all(funs(aux)) %>% dplyr::select(!!sym(columnas[i]))
       u = cbind(u, v)
     }
-    colnames(u) <- getLevelsTable(df, cruce)
+    #colnames(u) <- getLevelsTable(df, cruce)
+    # colnames(u) <- ifelse(length(u)!=length(getLevelsTable(df, cruce)),c('Mención',gsub("\\."," ",columnas)),
+    #                       getLevelsTable(df, cruce))
+    ifelse(length(u)!=length(getLevelsTable(df, cruce)),colnames(u)<-c('Mención',gsub("\\."," ",columnas)),colnames(u)<-getLevelsTable(df, cruce))
+    #colnames(u) <- nombrestabla
+
     # View(u) #<- data.frame(u, col.names = c("Mención", cruce_original), check.names = F)
 
   } else{
